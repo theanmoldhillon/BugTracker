@@ -13,7 +13,7 @@ using Microsoft.AspNet.Identity;
 
 namespace BugTracker.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class TicketsController : Controller
     {
         private ApplicationDbContext db { get; set; }
@@ -51,7 +51,7 @@ namespace BugTracker.Controllers
             return View("Index");
         }
         // Project Manger and Developer Tickets
-        //[Authorize(Roles = "Project Manager,Developer")]
+        [Authorize(Roles = "Project Manager,Developer")]
         public ActionResult ProjectManagerOrDeveloperTickets()
         {
             string userId = User.Identity.GetUserId();
@@ -97,7 +97,7 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Create
-        //[Authorize(Roles = "Submitter")]
+        [Authorize(Roles = "Submitter")]
         public ActionResult Create()
         {
             ViewBag.AssigneeId = new SelectList(db.Users, "Id", "DisplayName");
@@ -113,7 +113,7 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Roles = "Submitter")]
+        [Authorize(Roles = "Submitter")]
         public ActionResult Create([Bind(Include = "Id,Name,Description,TicketTypeId,TicketPriorityId,ProjectId")] Tickets tickets)
         {
             if (ModelState.IsValid)
