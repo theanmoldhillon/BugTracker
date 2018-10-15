@@ -13,8 +13,10 @@ namespace BugTracker.Models.Classes
         public Project()
         {
             Users = new HashSet<ApplicationUser>();
+            Tickets = new HashSet<Tickets>();
         }
 
         public virtual ICollection<ApplicationUser> Users { get; set; }
+        public virtual ICollection<Tickets> Tickets { get; set; }
     }
 }

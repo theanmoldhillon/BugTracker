@@ -15,6 +15,7 @@ namespace BugTracker.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public ManageController()
         {
@@ -244,7 +245,8 @@ namespace BugTracker.Controllers
             return View(model);
         }
 
-        //
+        
+
         // GET: /Manage/SetPassword
         public ActionResult SetPassword()
         {

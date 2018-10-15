@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BugTracker.Models.Classes;
@@ -12,7 +11,14 @@ namespace BugTracker.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+        public string LastName { get; set; }
+        public string FirstName { get; set; }
         public string Name { get; set; }
+
+        [InverseProperty("Creator")]
+        public virtual ICollection<Tickets> CreatedTickets { get; set; }
+        [InverseProperty("Assignee")]
+        public virtual ICollection<Tickets> AssignedTickets { get; set; }
 
         public ApplicationUser()
         {
@@ -44,6 +50,12 @@ namespace BugTracker.Models
 
         public System.Data.Entity.DbSet<BugTracker.Models.Classes.Project> Projects { get; set; }
 
+        public System.Data.Entity.DbSet<BugTracker.Models.Classes.Tickets> Tickets { get; set; }
 
+        public System.Data.Entity.DbSet<BugTracker.Models.Classes.TicketStatus> TicketStatuses { get; set; }
+
+        public System.Data.Entity.DbSet<BugTracker.Models.Classes.TicketPriority> TicketPriorities { get; set; }
+
+        public System.Data.Entity.DbSet<BugTracker.Models.Classes.TicketType> TicketTypes { get; set; }
     }
 }
