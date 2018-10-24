@@ -220,6 +220,7 @@
     <Compile Include="Models\Classes\TicketStatus.cs" />
     <Compile Include="Models\Classes\TicketType.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ImageUploadValidator.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ProjectAssignViewModel.cs" />
     <Compile Include="Models\TicketAttachment.cs" />
