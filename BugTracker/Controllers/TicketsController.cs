@@ -10,6 +10,7 @@ using BugTracker.Helper;
 using BugTracker.Models;
 using BugTracker.Models.Classes;
 using Microsoft.AspNet.Identity;
+using System.IO;
 
 namespace BugTracker.Controllers
 {
@@ -45,13 +46,16 @@ namespace BugTracker.Controllers
             }
             if (User.IsInRole("Developer"))
             {
-                var tickets = db.Tickets.Where(t => t.AssigneeId == userID).Include(t => t.Creator).Include(t => t.Assignee).Include(t => t.Project);
-                return View("Index", tickets.ToList());
+                var tickets = db.Tickets.Where(t => t.AssigneeId == userID).Include(t => t.Comments).Include(t => t.Creator).Include(t => t.Assignee).Include(t => t.Project); return View("Index", tickets.ToList());
+            }
+            if (User.IsInRole("Project Manager"))
+            {
+                return View(db.Tickets.Include(t => t.TicketPriority).Include(t => t.Project).Include(t => t.Comments).Include(t => t.TicketStatus).Include(t => t.TicketType).Where(p => p.AssigneeId == userID).ToList());
             }
             return View("Index");
         }
         // Project Manger and Developer Tickets
-        [Authorize(Roles = "Project Manager,Developer")]
+        [Authorize(Roles = "Developer,Project Manager")]
         public ActionResult ProjectManagerOrDeveloperTickets()
         {
             string userId = User.Identity.GetUserId();
@@ -95,8 +99,6 @@ namespace BugTracker.Controllers
             }
             return View(tickets);
         }
-
-        // GET: Tickets/Create
         [Authorize(Roles = "Submitter")]
         public ActionResult Create()
         {
