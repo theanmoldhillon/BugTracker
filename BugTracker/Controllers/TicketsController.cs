@@ -142,36 +142,33 @@ namespace BugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Submitter")]
-        public ActionResult Create([Bind(Include = "Id,Name,Description,TicketTypeId,TicketPriorityId,ProjectId")] Tickets tickets, HttpPostedFileBase image)
+        //[Authorize(Roles = "Submitter")]
+        public ActionResult CreateAttachment(int ticketId, [Bind(Include = "Id,Description,TicketTypeId")] TicketAttachment ticketAttachment, HttpPostedFileBase image)
         {
-            var ticketAttachment = new TicketAttachment();
-
             if (ModelState.IsValid)
             {
-                tickets.CreatorId = User.Identity.GetUserId();
-                tickets.TicketStatusId = 3;
-                db.Tickets.Add(tickets);
-                if (ImageUploadValidator.IsWebFriendlyImage(image))
+                var tickets = db.Tickets.FirstOrDefault(t => t.Id == ticketId);
+                if (!ImageUploadValidator.IsWebFriendlyImage(image))
                 {
-                    var fileName = Path.GetFileName(image.FileName);
-                    image.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
-                    ticketAttachment.FilePath = "/Uploads/" + fileName;
-                    ticketAttachment.UserId = User.Identity.GetUserId();
-                    ticketAttachment.TicketId = tickets.Id;
-                    ticketAttachment.Description = tickets.Description;
-                    ticketAttachment.Created = DateTime.Now;
-                    tickets.Attachments.Add(ticketAttachment);
-                }
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+                    ViewBag.ErrorMessage = "Please upload an image";
 
-            ViewBag.AssigneeId = new SelectList(db.Users, "Id", "DisplayName", tickets.AssigneeId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "Id", "Name", tickets.ProjectId);
-            ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", tickets.TicketPriorityId);
-            ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", tickets.TicketTypeId);
-            return View(tickets);
+                }
+                if (image == null)
+                {
+                    return HttpNotFound();
+                }
+                var fileName = Path.GetFileName(image.FileName);
+                image.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
+                ticketAttachment.FilePath = "/Uploads/" + fileName;
+                ticketAttachment.UserId = User.Identity.GetUserId();
+                ticketAttachment.Created = DateTime.Now;
+               
+                ticketAttachment.TicketId = ticketId;
+                db.TicketAttachments.Add(ticketAttachment);
+                db.SaveChanges();
+                return RedirectToAction("Details", tickets);
+            }
+            return View(ticketAttachment);
         }
 
         // GET: Tickets/Edit/5

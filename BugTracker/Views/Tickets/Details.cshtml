@@ -18,16 +18,16 @@
             @Html.DisplayFor(model => model.Assignee.Name)
         </dd>
 
-        <dt>
+        @*<dt>
             @Html.DisplayNameFor(model => model.Creator.Name)
-        </dt>
+        </dt>*@
 
         <dd>
             @Html.DisplayFor(model => model.Creator.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Project.Name)
+            @Html.DisplayNameFor(model => model.Project)
         </dt>
 
         <dd>
@@ -35,7 +35,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.TicketPriority.Name)
+            @Html.DisplayNameFor(model => model.TicketPriority)
         </dt>
 
         <dd>
@@ -43,7 +43,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.TicketStatus.Name)
+            @Html.DisplayNameFor(model => model.TicketStatus)
         </dt>
 
         <dd>
@@ -51,7 +51,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.TicketType.Name)
+            @Html.DisplayNameFor(model => model.TicketType)
         </dt>
 
         <dd>
@@ -82,9 +82,9 @@
             @Html.DisplayFor(model => model.Created)
         </dd>
 
-        <dt>
+        @*<dt>
             @Html.DisplayNameFor(model => model.Updated)
-        </dt>
+        </dt>*@
 
         <dd>
             @Html.DisplayFor(model => model.Updated)
@@ -110,6 +110,32 @@
         {
             <input type="hidden" name="slug" value="@Model.Comments" />
             <textarea name="Body"></textarea>
+            if (ViewBag.ErrorMessage != null)
+            {
+                <span>@ViewBag.ErrorMessage</span>
+            }
+            <input type="submit" value="submit" />
+        }
+    </div>
+
+    <div>
+        @foreach (var attachment in Model.Attachments)
+        {
+            <hr />
+            @attachment.User.Name
+            <div style="text-align: left; margin-left: 70px; width: 300px;">
+                <img class="img-responsive" src="@attachment.FilePath" alt="">
+                <span style="font-size: 10px; text-align: right">
+                    - @attachment.Created.ToString("dd/mm/yyyy hh:mm")
+                </span>
+            </div>
+        }
+    </div>
+    <div>
+        @using (Html.BeginForm("CreateAttachment", "Tickets", new { ticketid = Model.Id }, FormMethod.Post, new { enctype = "Multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            <input name="image" type="file" class="form-control" id="fileUpload" />
             if (ViewBag.ErrorMessage != null)
             {
                 <span>@ViewBag.ErrorMessage</span>
