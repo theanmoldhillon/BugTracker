@@ -13,7 +13,6 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace BugTracker.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -54,6 +53,32 @@ namespace BugTracker.Controllers
             {
                 _userManager = value;
             }
+        }
+
+        public ActionResult SwitchUsers(string switchedUser)
+        {
+            var currentuser = new ApplicationUser();
+            if (switchedUser == "IamtheAdmin") {
+                currentuser = context.Users.Where(p => p.Email == "admin@bugtracker.com").FirstOrDefault();
+            }
+            if (switchedUser == "John")
+            {
+                currentuser = context.Users.Where(p => p.Email == "pm@bugtracker.com").FirstOrDefault();
+            }
+            if (switchedUser == "Smith")
+            {
+                currentuser = context.Users.Where(p => p.Email == "dev@bugtracker.com").FirstOrDefault();
+            }
+            if (switchedUser == "Sam")
+            {
+                currentuser = context.Users.Where(p => p.Email == "submitter@bugtracker.com").FirstOrDefault();
+            }
+            if (currentuser != null)
+            {
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                SignInManager.SignIn(currentuser, false, false);
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         //
@@ -155,7 +180,7 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (!UserManager.IsInRole(user.Id, "Submitter"))
                 {

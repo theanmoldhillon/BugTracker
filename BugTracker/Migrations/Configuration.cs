@@ -51,6 +51,7 @@ namespace BugTracker.Migrations
                 adminUser = new ApplicationUser();
                 adminUser.Email = "admin@bugtracker.com";
                 adminUser.UserName = "admin@bugtracker.com";
+                adminUser.Name = "IamtheAdmin";
 
                 userManager.Create(adminUser, "Password-1");
             }
@@ -64,6 +65,69 @@ namespace BugTracker.Migrations
                 userManager.AddToRole(adminUser.Id, "Admin");
             }
 
+            ApplicationUser ProjectManager;
+
+            if (!context.Users.Any(p => p.UserName == "pm@bugtracker.com"))
+            {
+                ProjectManager = new ApplicationUser();
+                ProjectManager.Email = "pm@bugtracker.com";
+                ProjectManager.UserName = "pm@bugtracker.com";
+                ProjectManager.Name = "John";
+
+                userManager.Create(ProjectManager, "Password-1");
+            }
+            else
+            {
+                ProjectManager = context.Users.First(p => p.UserName == "pm@bugtracker.com");
+            }
+
+            if (!userManager.IsInRole(ProjectManager.Id, "Project Manager"))
+            {
+                userManager.AddToRole(ProjectManager.Id, "Project Manager");
+            }
+
+            ApplicationUser Developer;
+
+            if (!context.Users.Any(p => p.UserName == "dev@bugtracker.com"))
+            {
+                Developer = new ApplicationUser();
+                Developer.Email = "dev@bugtracker.com";
+                Developer.UserName = "dev@bugtracker.com";
+                Developer.Name = "Smith";
+
+                userManager.Create(Developer, "Password-1");
+            }
+            else
+            {
+                Developer = context.Users.First(p => p.UserName == "dev@bugtracker.com");
+            }
+
+            if (!userManager.IsInRole(Developer.Id, "Developer"))
+            {
+                userManager.AddToRole(Developer.Id, "Developer");
+            }
+
+
+            ApplicationUser Submitter;
+
+            if (!context.Users.Any(p => p.UserName == "submitter@bugtracker.com"))
+            {
+                Submitter = new ApplicationUser();
+                Submitter.Email = "submitter@bugtracker.com";
+                Submitter.UserName = "submitter@bugtracker.com";
+                Submitter.Name = "Sam";
+
+                userManager.Create(Submitter, "Password-1");
+            }
+            else
+            {
+                Submitter = context.Users.First(p => p.UserName == "submitter@bugtracker.com");
+            }
+
+            if (!userManager.IsInRole(Submitter.Id, "Submitter"))
+            {
+                userManager.AddToRole(Submitter.Id, "Submitter");
+            }
             context.TicketTypes.AddOrUpdate(x => x.Id,
               new Models.Classes.TicketType() { Id = 1, Name = "Bug Fixes" },
               new Models.Classes.TicketType() { Id = 2, Name = "Software Update" },
